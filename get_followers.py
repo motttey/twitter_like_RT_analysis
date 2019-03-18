@@ -8,13 +8,14 @@ AT = config.ACCESS_TOKEN
 ATS = config.ACCESS_TOKEN_SECRET
 twitter = OAuth1Session(CK, CS, AT, ATS)
 
-url = "https://api.twitter.com/1.1/followers/list.json"
+url = "https://api.twitter.com/1.1/friends/list.json"
 
 params = {
     "screen_name": "mt_tg",
 }
 
 req = twitter.get(url, params=params)
+screen_name_list = []
 
 if req.status_code == 200:
     user_object = json.loads(req.text.encode('utf-8'))
@@ -22,10 +23,11 @@ if req.status_code == 200:
     cursor = user_object["next_cursor"]
 
     for user in user_object["users"]:
+        screen_name_list.append(user["screen_name"])
         print(user["screen_name"])
 
     while "next_cursor" in user_object:
-        url = "https://api.twitter.com/1.1/followers/list.json"
+        url = "https://api.twitter.com/1.1/friends/list.json"
         params = {
             "screen_name": "mt_tg",
             "cursor": cursor,
@@ -35,6 +37,7 @@ if req.status_code == 200:
 
         if req.status_code == 200:
             for user in user_object["users"]:
+                screen_name_list.append(user["screen_name"])
                 print(user["screen_name"])
         else:
             print(req.status_code)
