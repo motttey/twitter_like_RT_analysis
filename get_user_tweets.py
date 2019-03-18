@@ -9,7 +9,6 @@ ATS = config.ACCESS_TOKEN_SECRET
 twitter = OAuth1Session(CK, CS, AT, ATS)
 
 # url = "https://api.twitter.com/1.1/users/show.json"
-# params = {"id": 23048655}
 page_max = 16
 user_timeline_url = "https://api.twitter.com/1.1/statuses/user_timeline.json"
 fav_RT_ratio_array = []
@@ -18,7 +17,6 @@ for page_index in range(1,page_max):
     params = {
         "screen_name": "mt_tg",
         "count": 200,
-        # "count": 100,
         "page": page_index,
     }
     req = twitter.get(user_timeline_url, params=params)
@@ -29,7 +27,7 @@ for page_index in range(1,page_max):
         print("---")
 
         for status in statuses:
-            if status["favorite_count"] > 1 and "retweeted_status" not in status.keys():
+            if status["favorite_count"] > 10 and "retweeted_status" not in status.keys():
                 if "media" in status["entities"].keys():
                     print(status["text"].encode('utf-8'))
                     print(status["retweet_count"])
@@ -47,3 +45,5 @@ for page_index in range(1,page_max):
         print(req.status_code)
 
 print(fav_RT_ratio_array)
+f = open('./result/username.json', 'w')
+json.dump(fav_RT_ratio_array, f)
